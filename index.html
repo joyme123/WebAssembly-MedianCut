@@ -19,12 +19,14 @@
 <body>
 	<div id="status"></div>
 	<input type="file" id="uploader" />
-	<button id="close">Shutdown app</button>
 	<br />
 	<label for="maxCubes">最大颜色数</label>
-	<input type="range" min="100" max="256" value="256" step="10" id="maxCubes">
+	<input type="range" min="1" max="256" value="256" step="1" id="maxCubes">
 
-	<div class="separator">Results:</div>
+	<button type="button" onclick="autoplay()">观看自动演示</button>
+	<span id="cubeValue"></span>
+
+	<div class="separator">结果:</div>
 	<div>
 		<image id="sourceImg" class="image" />
 		<image id="targetImg" class="image" />
@@ -57,6 +59,8 @@
 		function gotMem(pointer) {
 			memoryBytes.set(bytes, pointer);
 			// Now the image can be loaded from the slice.
+
+			console.log("load image")
 			loadImage();
 		}
 
@@ -79,6 +83,29 @@
 			imageType = this.files[0].type;
 			reader.readAsArrayBuffer(this.files[0]);
 		});
+
+		document.getElementById('maxCubes').addEventListener('change', function(v) {
+			console.log("改变的值", v.target.value)
+			maxCubeChange(v.target.value)
+		})
+
+		function autoplay() {
+			var i = 1;
+			var timer = setInterval(function() {
+				updateMaxCubeValue(i)
+				document.getElementById('maxCubes').setAttribute('value',i)
+				maxCubeChange(i)
+				i += 2
+
+				if (i == 256) {
+					clearInterval(timer)
+				}
+			}, 200)
+		}
+
+		function updateMaxCubeValue(v) {
+			document.getElementById('cubeValue').innerText = "颜色数为:"+v
+		}
 	</script>
 </body>
 </html>

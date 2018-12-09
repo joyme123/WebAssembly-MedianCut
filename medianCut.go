@@ -28,7 +28,7 @@ type MedianCut struct {
 	imgHeight int
 }
 
-// New 负责初始化MedianCut中一些必要参数
+// NewMedianCut 负责初始化MedianCut中一些必要参数
 func NewMedianCut() *MedianCut {
 
 	mc := &MedianCut{}

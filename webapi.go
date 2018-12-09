@@ -12,6 +12,7 @@ import (
 
 // WebAPI 是暴露给浏览器的接口
 type WebAPI struct {
+	onMaxCubeCb js.Callback // 最大颜色数的回调
 	onImgLoadCb js.Callback // 图片加载回调
 	onMemInitCb js.Callback // 内存初始化回调
 	inBuf       []uint8     // reader
@@ -36,9 +37,13 @@ func (api *WebAPI) Init() {
 	api.setOnImgLoadCb()
 	js.Global().Set("loadImage", api.onImgLoadCb)
 
+	api.setMaxCubeCb()
+	js.Global().Set("maxCubeChange", api.onMaxCubeCb)
+
 	<-api.done
 	api.onMemInitCb.Release()
 	api.onImgLoadCb.Release()
+	api.onMaxCubeCb.Release()
 }
 
 func (api *WebAPI) updateImage(img image.Image) {
