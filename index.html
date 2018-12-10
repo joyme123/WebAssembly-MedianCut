@@ -24,13 +24,16 @@
 	<input type="range" min="1" max="256" value="256" step="1" id="maxCubes">
 
 	<button type="button" onclick="autoplay()">观看自动演示</button>
-	<span id="cubeValue"></span>
+	当前颜色数：<span id="cubeValue">256</span>
+
+	<button type="button" id="shutdown">终止应用</button>
 
 	<div class="separator">结果:</div>
 	<div>
 		<image id="sourceImg" class="image" />
 		<image id="targetImg" class="image" />
 	</div>
+
 
 
 	<script src="wasm_loader.js"></script>
@@ -86,8 +89,13 @@
 
 		document.getElementById('maxCubes').addEventListener('change', function(v) {
 			console.log("改变的值", v.target.value)
+			updateMaxCubeValue(v.target.value)
 			maxCubeChange(v.target.value)
 		})
+
+		document.getElementById('shutdown').addEventListener('click', function() {
+			shutdown()
+		});
 
 		function autoplay() {
 			var i = 1;
@@ -104,7 +112,7 @@
 		}
 
 		function updateMaxCubeValue(v) {
-			document.getElementById('cubeValue').innerText = "颜色数为:"+v
+			document.getElementById('cubeValue').innerText = v
 		}
 	</script>
 </body>

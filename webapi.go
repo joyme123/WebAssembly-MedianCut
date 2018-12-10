@@ -2,6 +2,7 @@ package mediancut
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/png"
 	"log"
@@ -12,11 +13,13 @@ import (
 
 // WebAPI 是暴露给浏览器的接口
 type WebAPI struct {
-	onMaxCubeCb js.Callback // 最大颜色数的回调
-	onImgLoadCb js.Callback // 图片加载回调
-	onMemInitCb js.Callback // 内存初始化回调
-	inBuf       []uint8     // reader
-	outBuf      bytes.Buffer
+	onMaxCubeCb  js.Callback // 最大颜色数的回调
+	onImgLoadCb  js.Callback // 图片加载回调
+	onMemInitCb  js.Callback // 内存初始化回调
+	onShutdownCb js.Callback // 释放资源回调
+
+	inBuf  []uint8 // reader
+	outBuf bytes.Buffer
 
 	console js.Value
 	done    chan struct{}
@@ -40,10 +43,17 @@ func (api *WebAPI) Init() {
 	api.setMaxCubeCb()
 	js.Global().Set("maxCubeChange", api.onMaxCubeCb)
 
+	api.setShutdownCb()
+	js.Global().Set("shutdown", api.onShutdownCb)
+
 	<-api.done
+
+	fmt.Println("释放资源")
+
 	api.onMemInitCb.Release()
 	api.onImgLoadCb.Release()
 	api.onMaxCubeCb.Release()
+	api.onShutdownCb.Release()
 }
 
 func (api *WebAPI) updateImage(img image.Image) {

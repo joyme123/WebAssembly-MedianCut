@@ -28,3 +28,9 @@ func (api *WebAPI) setMaxCubeCb() {
 		api.updateImage(paletted)
 	})
 }
+
+func (api *WebAPI) setShutdownCb() {
+	api.onShutdownCb = js.NewEventCallback(js.PreventDefault, func(e js.Value) {
+		api.done <- struct{}{}
+	})
+}
