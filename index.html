@@ -48,18 +48,24 @@
 			fetch("mc.wasm", {cache: 'no-cache'}), go.importObject).then((result) => {
 			mod = result.module;
 			inst = result.instance;
+			console.log("inst", inst)
 			memoryBytes = new Uint8Array(inst.exports.mem.buffer)
+			console.log("内存长度", memoryBytes.length)
 			document.getElementById('status').innerText = "Initialization complete.";
 			run();
 		});
 
 		async function run() {
+			console.log("run")
 			await go.run(inst);
 		}
 
 		// gotMem sets the webassembly linear memory with the image buffer result
 		// at the slice header pointer passed from Go.
 		function gotMem(pointer) {
+
+			console.log("pointer", pointer)
+
 			memoryBytes.set(bytes, pointer);
 			// Now the image can be loaded from the slice.
 
